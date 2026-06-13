@@ -1,0 +1,113 @@
+#include <iostream>
+#include <iomanip> // Include this for std::fixed and std::setprecision
+#include <string>
+using namespace std;
+
+string payment1 = "Your tax to be paid is: Php ";
+string payment2 = "Your PhilHealth Contribution is: Php ";
+string payment3 = "Your Net Salary is: Php ";
+string payment4 = "Your PAG-IBIG Contribution is: Php ";
+string payment5 = "Your SSS Contribution is: Php ";
+double monthlyIncome, annualIncome, tax;
+
+void computeTax(){
+    const int taxExemption = 250000; // Tax exemption if your Annual Income is equal or less than 250000
+    const double taxCase1 = 0.15; // 15% of the excess income over 250000
+    const double taxCase2 = 0.20; // 22500 + 20% of the excess income over 400000
+    const double taxCase3 = 0.25; // 102500 + 25% of the excess income over 800000
+    const double taxCase4 = 0.30; // 402500 + 30% of the excess income over 2000000
+    const double taxCase5 = 0.35; // 2202500 + 35% of the excess income over 8000000
+   
+    // Calculate the annual income
+    annualIncome = monthlyIncome * 12;
+   
+    // Calculate the tax based on the annual income
+    if (annualIncome < 0){
+        cout << "Income cannot be negative!" << endl;
+        tax = 0; // Set tax to 0 to avoid undefined behavior
+    } else if (annualIncome <= taxExemption){
+        tax = 0; // No tax for income equal or less than to 250000
+    } else if (annualIncome <= 400000){
+        tax = (annualIncome-250000) * taxCase1; // 15% of the excess income over 250000
+    } else if (annualIncome <= 800000){
+        tax = 22500 + (annualIncome-400000) * taxCase2; // 22500 + 20% of the excess income over 400000
+    } else if (annualIncome <= 2000000){
+        tax = 102500 + (annualIncome-800000) * taxCase3; // 102500 + 25% of the excess income over 800000
+    } else if (annualIncome <= 8000000){
+        tax = 402500 + (annualIncome- 2000000) * taxCase4; // 402500 + 30% of the excess income over 2000000
+    } else {
+        tax = 2202500 + (annualIncome- 8000000) * taxCase5; // 2202500 + 35% of the excess income over 8000000
+    }
+   
+    // Output the monthly tax
+    cout << fixed << setprecision(2); // Set fixed-point notation and precision
+    cout << payment1 << tax / 12 << endl; // Divide the tax by 12 to get the monthly tax
+}
+
+double computePhilHealthContribution(){
+    double contribution;
+   
+    // Define PhilHealth Contribution based on monthly income ranges
+    if (monthlyIncome <= 10000){
+        contribution = 500; // Fixed amount for income up to 10000
+    } else if (monthlyIncome > 10000 && monthlyIncome <= 99999.99){
+        contribution = (monthlyIncome * 0.05); // 5% of the income between 10000.01 and 99999.99  
+    } else {
+        contribution = 5000; // for income above 100000
+    }
+    return contribution / 2; // Assuming the employer pays half
+}
+
+double computePAGIBIGContribution() {
+    return 200; // Fixed PAG-IBIG contribution of 200 pesos
+}
+
+double computeSSSContribution() {
+    const double employeeRate = 0.045; // Employee's share (4.5%)
+    double employeeContribution = monthlyIncome * employeeRate;
+
+    // Adjust contribution based on income brackets
+    if (monthlyIncome <= 14799.99) {
+        employeeContribution = (monthlyIncome * employeeRate) + 10;
+    } else {
+        employeeContribution = (monthlyIncome * employeeRate) + 30; // fixed amount for higher income
+    }
+
+    // Output the employee contribution
+    cout << fixed << setprecision(2); // Set fixed-point notation and precision
+    cout << payment5 << employeeContribution << endl;
+
+    return employeeContribution; // Return the employee SSS contribution
+}
+
+double computeNetSalary() {
+    double monthlyTax = tax / 12; // monthly tax
+    double philHealthContribution = computePhilHealthContribution(); // get PhilHealth Contribution
+    double sssContribution = computeSSSContribution(); // get SSS Contribution
+    double pagIBIGContribution = computePAGIBIGContribution(); // get PAG-IBIG Contribution
+
+    return monthlyIncome - monthlyTax - philHealthContribution - sssContribution - pagIBIGContribution; // Calculate the net salary
+}
+
+int main() {
+    // Ask the user for their monthly income
+    cout << "Enter your monthly income (in PHP): ";
+    cin >> monthlyIncome;
+
+    // Call the function to compute the tax
+    computeTax();
+
+    // Compute PhilHealth Contribution
+    double philHealthContribution = computePhilHealthContribution();
+    cout << payment2 << philHealthContribution << endl;
+
+    // Compute PAG-IBIG Contribution
+    double pagIBIG = computePAGIBIGContribution();
+    cout << payment4 << pagIBIG << endl;
+
+    // Compute Net Salary
+    double netSalary = computeNetSalary();
+    cout << payment3 << netSalary << endl;
+
+    return 0;
+}

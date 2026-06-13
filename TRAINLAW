@@ -1,0 +1,53 @@
+// AARON LUDWIG A. ALTAR 
+// CPE2A 11-7-24
+// TRAIN LAW
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+string payment = "Your tax to be paid is: ";
+int income, tax;
+
+void computeTax() {
+    const int taxExemption = 250000; // Tax exemption threshold
+    const double taxCase1 = 0.15; // 15% of the excess for income over 250,000
+    const double taxCase2 = 0.20; // 22,500 + 20% of the excess for income over 400,000
+    const double taxCase3 = 0.25; // 102,500 + 25% of the excess for income over 800,000
+    const double taxCase4 = 0.30; // 402,500 + 30% of the excess for income over 2,000,000 
+    const double taxCase5 = 0.35; // 2,202,500 + 35% of the excess for income over 8,000,000 
+
+    // Calculate the tax based on income
+    if (income < 0) {
+        cout << "Income cannot be negative!" << endl;
+    } else if (income <= taxExemption) {
+        tax = 0; // No tax for income below or equal to the exemption
+        cout << payment << tax << endl;
+    } else if (income <= 400000) {
+        tax = (income - taxExemption) * taxCase1; // 15% of the excess over 250,000
+        cout << payment << tax << endl;
+    } else if (income <= 800000) {
+        tax = 22500 + (income - 400000) * taxCase2; // 22,500 + 20% of the excess over 400,000
+        cout << payment << tax << endl;
+    } else if (income <= 2000000) {
+        tax = 102500 + (income - 800000) * taxCase3; // 102,500 + 25% of the excess over 800,000
+        cout << payment << tax << endl;
+    } else if (income <= 8000000) {
+        tax = 402500 + (income - 2000000) * taxCase4; // 402,500 + 30% of the excess over 2,000,000
+        cout << payment << tax << endl;
+    } else {
+        tax = 2202500 + (income - 8000000) * taxCase5; // 2,202,500 + 35% of the excess over 8,000,000
+        cout << payment << tax << endl;
+    }
+}
+
+int main() {
+    // Ask the user for their gross income
+    cout << "Enter your gross income (in PHP): ";
+    cin >> income;
+
+    // Call the function to compute the tax
+    computeTax();
+
+    return 0;
+}
